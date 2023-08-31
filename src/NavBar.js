@@ -5,7 +5,7 @@ import './NavBar.css';
 
 function NavBar({logout}) {
     const { currentUser } = useContext(UserContext);
-    if(currentUser === null){
+    if(!currentUser){
         return (
             <nav className="Navigation navbar navbar-expand-md">
                 <div className="container-fluid">

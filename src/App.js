@@ -5,14 +5,17 @@ import { isExpired, decodeToken } from "react-jwt";
 import NavBar from './NavBar';
 import RoutesAll from './RoutesAll';
 import UserContext from './userContext';
+import useLocalStorage from './hooks/useLocalStorage';
 import JoblyApi from "./api";
+import background from "./img/image.png";
 
-const token = "YOUR JWT";
+// Key name for storing token in localStorage for "remember me" re-login
+export const TOKEN_STORAGE_ID = "jobly-token";
 
 function App() {
   const [infoLoaded, setInfoLoaded] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
-  const [token, setToken] = useState("");
+  const [token, setToken] = useLocalStorage(TOKEN_STORAGE_ID);
   const [applicationIds, setApplicationIds] = useState(new Set([]));
 
   useEffect( () => {
@@ -23,8 +26,9 @@ function App() {
           JoblyApi.token = token;
           let res = await JoblyApi.getCurrentUser(decodedToken.username);
           setCurrentUser(res);
+          return {success: true};
         } catch(err) {
-
+          return {success:false, err};
         }
       }
     }
@@ -41,8 +45,10 @@ function App() {
     try {
       const token = await JoblyApi.login(loginForm);
       setToken(token);
+      return {success: true};
     } catch(err) {
-
+      console.log("login error:", err);
+      return {success:false, err};
     }
   }
 
@@ -50,8 +56,10 @@ function App() {
     try {
       const token = await JoblyApi.signup(signupForm);
       setToken(token);
+      return {success: true};
     } catch(err) {
-
+      console.log("signup error:", err);
+      return {success:false, err};
     }
   }
 
@@ -62,9 +70,10 @@ function App() {
   async function applyToJob(jobId) {
     try {
       JoblyApi.applyToJob(currentUser.username, jobId);
-      setApplicationIds(oldIds => ([...oldIds, jobId]));
+      setApplicationIds(oldIds => (new Set([...oldIds, jobId])))
+      return {success: true};
     } catch(err) {
-
+      return {success:false, err};
     }
   }
 
@@ -73,7 +82,7 @@ function App() {
       <div className="App">
         <BrowserRouter>
           <NavBar logout={logout}/>
-          <div className="pt-5">
+          <div className="pt-5 Route" style={{ backgroundImage: `url(${background})`}}>
             <RoutesAll signup={signup} login={login}/>
           </div>
         </BrowserRouter >

@@ -3,29 +3,47 @@ import UserContext from "./userContext.js";
 import Alert from './Alert.js'
 import JoblyApi from "./api";
 import "./Profile.css"
+import { Navigate } from "react-router-dom";
 
 function Profile() {
     const { currentUser, setCurrentUser } = useContext(UserContext);
     console.log(currentUser);
 
-    const [ formError, setFormError] = useState(null);
+    const [ formError, setFormError] = useState([]);
+    const [ formData, setFormData ] = useState( {
+        username: currentUser.username,
+        firstName: currentUser.firstName,
+        lastName: currentUser.lastName,
+        email: currentUser.email
+    })
+
+    const [ saveConfirmed, setSaveConfirmed ] = useState(false);
 
     function handleChange(evt) {
         evt.persist();
-        setCurrentUser(f => ({ ...f, [evt.target.name]:evt.target.value }));
+        setFormData(f => ({ ...f, [evt.target.name]:evt.target.value }));
     }
 
     async function handleSubmit(evt) {
         evt.preventDefault();
-        try {
-            await JoblyApi.saveProfile(username, currentUser);
-        } catch(errors) {
-            return <Alert errors={errors}/>
+        let profileData = {
+            firstName: formData.firstName,
+            lastName: formData.lastName,
+            email: formData.email,
         }
 
+        let updatedUser;
+        try {
+            updatedUser = await JoblyApi.saveProfile(currentUser.username, profileData);
+        } catch(err) {
+            setFormError(err);
+            return;
+        }
+        console.log(updatedUser);
+        setCurrentUser(updatedUser);
+        setSaveConfirmed(true);
+        setFormError([]);
     }
-
-    const {username, firstName, lastName, email } = currentUser;
     
     return (
         <div className="Profile-form">
@@ -40,8 +58,9 @@ function Profile() {
                                     id="username"
                                     name="username" 
                                     className="form-control" 
-                                    value={username}
+                                    value={formData.username}
                                     onChange={handleChange}
+                                    readOnly={true}
                                 />
                             </div>
                             <div className="mb-3">
@@ -50,7 +69,7 @@ function Profile() {
                                     id="firstName" 
                                     name="firstName" 
                                     className="form-control" 
-                                    value={firstName}
+                                    value={formData.firstName}
                                     onChange={handleChange}
                                  />
                             </div>
@@ -60,7 +79,7 @@ function Profile() {
                                     id="lastName" 
                                     name="lastName" 
                                     className="form-control" 
-                                    value={lastName}
+                                    value={formData.lastName}
                                     onChange={handleChange}
                                 />
                             </div>
@@ -71,10 +90,20 @@ function Profile() {
                                     type="email" 
                                     name="email" 
                                     className="form-control" 
-                                    value={email}
+                                    value={formData.email}
                                     onChange={handleChange}
                                 />
                             </div>
+
+
+                            {formError.length? 
+                                <Alert type="danger" messages={formError}/>
+                                : null
+                            }
+                            {saveConfirmed?
+                                <Alert type="success" messages={["Updated successfully"]}/>
+                                : null
+                            }
                             <div className="d-grid">
                                 <button type="submit" className="btn btn-primary">Submit</button>
                             </div>

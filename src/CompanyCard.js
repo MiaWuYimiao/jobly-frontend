@@ -1,15 +1,23 @@
 import React from "react";
+import { Link } from "react-router-dom";
+import "./companyCard.css";
 
-function CompanyCard({ company }) {
+function CompanyCard({company}) {
+    let {name, logoUrl, description, handle} = company;
     return (
-        <a className="CompanyCard" href={`/companies/${company.handle}`}>
+        <Link className="CompanyCard card" to={`/companies/${handle}`}>
             <div className="card-body">
-                <h6>{company.name}</h6>
+                <h6 className="card-title">
+                    {name}
+                    {logoUrl && <img src={logoUrl}
+                             alt={name}
+                             className="float-right ml-5" />}
+                </h6>
                 <p>
-                    <small>{company.description}</small>
+                    <small>{description}</small>
                 </p>
             </div>
-        </a>
+        </Link>
     )
 }
 

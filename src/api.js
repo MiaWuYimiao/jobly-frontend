@@ -46,14 +46,14 @@ class JoblyApi {
   // obviously, you'll add a lot here ...
 
   /** Get all compamies */
-  static async getCompanies() {
-    let res = await this.request('companies');
+  static async getCompanies(name) {
+    let res = await this.request('companies', {name});
     return res.companies;
   }
 
   /** Get all jobs */
-  static async getJobs() {
-    let res = await this.request('jobs');
+  static async getJobs(title) {
+    let res = await this.request('jobs', {title});
     return res.jobs;
   }
 
@@ -94,7 +94,7 @@ class JoblyApi {
 
   /** Apply(post) to a job by username and jobId */
   static async applyToJob(username, jobId) {
-    let res = await this.request(`users/${username}/jobs/${jobId}`);
+    let res = await this.request(`users/${username}/jobs/${jobId}`, {}, "post");
     return res;
   }
 }

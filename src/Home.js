@@ -1,5 +1,6 @@
 import React, { useContext } from "react";
 import UserContext from "./userContext";
+import {Link} from "react-router-dom";
 import "./Home.css";
 
 function Home() {
@@ -11,12 +12,12 @@ function Home() {
                     <h1 className="mb-4 fw-bold">Jobly</h1>
                     <p className="lead">All the jobs in one, convenient place.</p>
                     <p>
-                        <a className="btn btn-primary fw-bold me-3" href="/login">
+                        <Link className="btn btn-primary fw-bold me-3" to="/login">
                             Log in
-                        </a>
-                        <a className="btn btn-primary fw-bold" href="/Signup">
+                        </Link>
+                        <Link className="btn btn-primary fw-bold" to="/signup">
                             Sign up
-                        </a>
+                        </Link>
                     </p>
                 </div>
             </div>

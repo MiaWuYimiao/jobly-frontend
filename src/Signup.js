@@ -14,7 +14,7 @@ function Signup({signup}) {
     const navigate = useNavigate();
 
     const [ signupForm, setSignupForm ] = useState(initialFormData);
-    const [ formError, setFormError] = useState(null);
+    const [ formError, setFormError] = useState([]);
 
     function handleChange(evt) {
         evt.persist();
@@ -23,13 +23,14 @@ function Signup({signup}) {
 
     async function handleSubmit(evt) {
         evt.preventDefault();
-        try {
-            signup(signupForm);
-            navigate('/');
-        } catch(errors) {
-            return <Alert errors={errors}/>
-        }
+        let result = await signup(signupForm);
+        console.log(result);
 
+        if(result.success){
+            navigate('/');
+        } else {
+            setFormError(result.err);
+        }
     }
 
     const {username, password, firstName, lastName, email } = signupForm;
@@ -92,6 +93,11 @@ function Signup({signup}) {
                                     onChange={handleChange}
                                 />
                             </div>
+
+                            {formError.length? 
+                                <Alert type="danger" messages={formError}/>
+                                : null
+                            }
                             <div className="d-grid">
                                 <button type="submit" className="btn btn-primary">Submit</button>
                             </div>

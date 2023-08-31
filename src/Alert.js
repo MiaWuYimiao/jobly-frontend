@@ -1,9 +1,13 @@
 import React from "react";
 
-function Alert({errors}) {
+function Alert({type="danger", messages=[]}) {
     return (
-        <div>
-            <h1> Error: {errors} !!!</h1>
+        <div className={`alert alert-${type}`} role="alert">
+            {messages.map(error=>(
+                <p className="mb-0 small" key="error">
+                    {error}
+                </p>
+            ))}
         </div>
     )
 }

@@ -1,11 +1,12 @@
-import React, { useContext, useState } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import Alert from './Alert.js';
 import "./Login.css";
 
 
 function Login({login}) {
     const [ loginForm, setLoginForm ] = useState({username:"", password:""});
-    const [ formError, setFormError] = useState(null);
+    const [ formError, setFormError] = useState([]);
     
     const navigate = useNavigate();
 
@@ -16,8 +17,14 @@ function Login({login}) {
 
     async function handleSubmit(evt) {
         evt.preventDefault();
-        login(loginForm);
-        navigate('/');
+        let result = await login(loginForm);
+        console.log(result);
+
+        if(result.success){
+            navigate('/');
+        } else {
+            setFormError(result.err);
+        }
     }
 
     const {username, password} = loginForm;
@@ -50,6 +57,11 @@ function Login({login}) {
                                     value={password} 
                                 />
                             </div>
+
+                            {formError.length? 
+                                <Alert type="danger" messages={formError}/>
+                                : null
+                            }
                             <div className="d-grid">
                                 <button type="submit" className="btn btn-primary">Submit</button>
                             </div>

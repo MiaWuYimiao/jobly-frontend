@@ -8,17 +8,27 @@ import JobList from "./JobList";
 import Profile from "./Profile";
 import Signup from "./Signup";
 import Login from "./Login";
+import PrivateRoute from "./PrivateRoute";
 
 function RoutesAll({login, signup}) {
     return (
         <Routes>
-            <Route exact path="/" element={<Home />}></Route>
-            <Route exact path="/companies" element={<CompanyList />}></Route>
-            <Route exact path="/companies/:handle" element={<CompanyDetail />}></Route>
-            <Route exact path="/jobs" element={<JobList />}></Route>
-            <Route exact path="/profile" element={<Profile />}></Route>
-            <Route exact path="/signup" element={<Signup signup={signup}/>}></Route>
-            <Route exact path="/login" element={<Login login={login}/>}></Route>
+            <Route exact path="/" element={<Home />} />
+            <Route exact path="/companies" element={
+                <PrivateRoute><CompanyList /></PrivateRoute>} 
+            />
+            <Route exact path="/companies/:handle" element={
+                <PrivateRoute><CompanyDetail /></PrivateRoute>}
+            />
+            <Route exact path="/jobs" element={
+                <PrivateRoute><JobList /></PrivateRoute>} 
+            />
+            <Route exact path="/profile" element={
+                <PrivateRoute><Profile /></PrivateRoute>} 
+            />
+            <Route exact path="/signup" element={<Signup signup={signup}/>} />
+            <Route exact path="/login" element={<Login login={login}/>} />
+            <Route exact path="*" element={<Home />} />
         </Routes>
     )
 }
